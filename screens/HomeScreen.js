@@ -17,7 +17,7 @@ import { TrendingMovies } from "../components/trendingMovies";
 import { MovieList } from "../components/movieList";
 const ios = Platform.OS == "ios";
 
-const HomeScreen = () => {
+export const HomeScreen = () => {
   const [trending, setTrending] = useState([1, 2, 3, 4, 5]);
   const [upcoming, setUpcoming] = useState([1, 2, 3, 4, 5]);
   const [topRated, setTopRated] = useState([1, 2, 3, 4, 5]);
@@ -53,5 +53,3 @@ const HomeScreen = () => {
     </View>
   );
 };
-
-export default HomeScreen;
