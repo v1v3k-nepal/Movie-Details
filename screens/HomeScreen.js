@@ -15,12 +15,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "../theme";
 import { TrendingMovies } from "../components/trendingMovies";
 import { MovieList } from "../components/movieList";
+import { useNavigation } from "@react-navigation/core";
 const ios = Platform.OS == "ios";
 
 export const HomeScreen = () => {
   const [trending, setTrending] = useState([1, 2, 3, 4, 5]);
   const [upcoming, setUpcoming] = useState([1, 2, 3, 4, 5]);
   const [topRated, setTopRated] = useState([1, 2, 3, 4, 5]);
+  const navigation = useNavigation();
   return (
     <View className="flex-1 bg-neutral-800">
       {/* Search Bar and logo section */}
@@ -31,7 +33,7 @@ export const HomeScreen = () => {
           <Text className="text-white text-3xl font-bold">
             <Text style={styles.text}>M</Text>ovies
           </Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("Search")}>
             <MagnifyingGlassIcon color="white" strokeWidth={2} size={30} />
           </TouchableOpacity>
         </View>
