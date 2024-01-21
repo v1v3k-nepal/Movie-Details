@@ -1,20 +1,11 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { View, Text } from "react-native";
+import AppNavigation from "./navigation/appNavigation";
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Hello Vivek</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+  return <AppNavigation />;
+  // return (
+  //   <View className="flex-1 items-center justify-center">
+  //     <Text className="text-3xl text-blue-600">Good Morning Vivek</Text>
+  //   </View>
+  // );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
