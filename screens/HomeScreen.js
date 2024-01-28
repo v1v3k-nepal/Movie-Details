@@ -40,7 +40,6 @@ export const HomeScreen = () => {
   const getTrendingMovies = async () => {
     const data = await fetchTrendingMovies();
     if (data && data?.results) setTrending(data?.results);
-    console.log(data);
     setLoading(false);
   };
 

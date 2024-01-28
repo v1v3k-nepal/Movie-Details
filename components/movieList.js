@@ -38,7 +38,7 @@ export const MovieList = ({ title, data, hideSeeAll }) => {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingHorizontal: 15 }}
       >
-        {data.map((item, index) => {
+        {data?.map((item, index) => {
           return (
             <TouchableWithoutFeedback
               key={index}

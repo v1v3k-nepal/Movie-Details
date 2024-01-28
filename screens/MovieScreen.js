@@ -18,7 +18,13 @@ import { Cast } from "../components/cast";
 import { MovieList } from "../components/movieList";
 import { StatusBar } from "expo-status-bar";
 import { Loading } from "../components/loading";
-import { image500 } from "../api/movieDb";
+import {
+  fallbackMoviePoster,
+  fetchMovieCredits,
+  fetchMovieDetails,
+  fetchRelatedMovies,
+  image500,
+} from "../api/movieDb";
 
 export const MovieScreen = () => {
   const ios = Platform.OS === "ios";
@@ -28,14 +34,46 @@ export const MovieScreen = () => {
   const { params: item } = useRoute();
   const [isFavourite, setIsFavourite] = useState(false);
   const movieName = "Ant Man the Spider Universe Home Coming";
-  const [castData, setCastData] = useState([1, 2, 3, 4, 5, 6, 7]);
-  const [similarMovies, setSimilarMovies] = useState([
-    1, 2, 3, 4, 4, 3, 2, 4, 2,
-  ]);
-  const [loading, setLoading] = useState(false);
+  const [castData, setCastData] = useState([]);
+  const [relatedMovies, setRelatedMovies] = useState([]);
+  const [movie, setMovie] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  const getMovieDetails = async (id) => {
+    const data = await fetchMovieDetails(id);
+    if (data) {
+      setMovie(data);
+    }
+  };
+
+  const getMovieCredits = async (id) => {
+    const data = await fetchMovieCredits(id);
+    if (data) {
+      setCastData(data?.cast);
+    }
+  };
+
+  const getRelatedMovies = async (id) => {
+    const data = await fetchRelatedMovies(id);
+    if (data && data?.results) {
+      setRelatedMovies(data?.results);
+    }
+  };
 
   useEffect(() => {
-    //call the api for movie details
+    const fetchData = async () => {
+      setLoading(true);
+
+      await Promise.all([
+        getMovieDetails(item?.id),
+        getMovieCredits(item?.id),
+        getRelatedMovies(item?.id),
+      ]);
+
+      setLoading(false);
+    };
+
+    fetchData();
   }, [item]);
 
   return (
@@ -72,8 +110,11 @@ export const MovieScreen = () => {
         ) : (
           <View>
             <Image
-              source={require("../assets/images/moviePoster2.png")}
-              style={{ width: width, height: height * 0.55 }}
+              source={
+                // require("../assets/images/moviePoster2.png")
+                { uri: image500(movie?.poster_path) }
+              }
+              style={{ width: width, height: height * 0.75 }}
             />
             <LinearGradient
               colors={[
@@ -94,42 +135,41 @@ export const MovieScreen = () => {
       {!loading && (
         <View style={{ marginTop: -(height * 0.09) }} className="space-y-3">
           {/* movie title */}
-          <Text className="text-white text-2xl text-center font-bold tracking-wider">
-            {movieName}
+          <Text className="text-white text-2xl text-center font-bold tracking-wider flex-row flex-wrap p-1">
+            {movie?.title}
           </Text>
           <Text className="text-center text-neutral-400 text-base font-semibold">
-            Release • 2020 • 170 Min
+            Release Date • {movie?.release_date}
+          </Text>
+          <Text className="text-center text-neutral-400 text-base font-semibold">
+            Watch Time • {movie?.runtime} Min
           </Text>
           {/* genres */}
-          <View className="flex-row justify-center space-x-2">
-            <Text className="text-center text-neutral-400 text-base font-semibold">
-              Action •
-            </Text>
-            <Text className="text-center text-neutral-400 text-base font-semibold">
-              Thrill •
-            </Text>
-            <Text className="text-center text-neutral-400 text-base font-semibold">
-              Comedy
-            </Text>
+          <View className="flex-row justify-center space-x-2 flex-wrap">
+            {movie?.genres?.map((genre, index) => {
+              showDots = index + 1 !== movie?.genres?.length;
+              return (
+                <View key={genre?.id}>
+                  <Text className="text-center text-neutral-400 text-base font-semibold">
+                    {genre?.name} {showDots ? "•" : null}
+                  </Text>
+                </View>
+              );
+            })}
           </View>
           <Text className=" text-neutral-400 mx-4 tracking-wide">
-            Armed with a super-suit with the astonishing ability to shrink in
-            scale but increase in strength, cat burglar Scott Lang must embrace
-            his inner hero and help his mentor, Dr. Hank Pym, pull off a plan
-            that will save the world. Armed with a super-suit with the
-            astonishing ability to shrink in scale but increase in strength, cat
-            burglar Scott
+            {movie?.overview}
           </Text>
         </View>
       )}
       {/* movie cast details */}
-      {!loading && <Cast castData={castData} />}
+      {!loading && castData?.length > 0 && <Cast castData={castData} />}
 
-      {/* similar movies section  */}
+      {/* related movies section  */}
       {!loading && (
         <MovieList
           title="Related Movies"
-          data={similarMovies}
+          data={relatedMovies.length > 0 ? relatedMovies : [movie, movie]}
           hideSeeAll={true}
         />
       )}

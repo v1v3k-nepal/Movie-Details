@@ -1,6 +1,7 @@
 import { View, Text, ScrollView, TouchableOpacity, Image } from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
+import { fallbackCastImage, image185, image500 } from "../api/movieDb";
 
 export const Cast = ({ castData }) => {
   const characterName = "Tony Stark";
@@ -21,19 +22,25 @@ export const Cast = ({ castData }) => {
               >
                 <View className="overflow-hidden rounded-full h-20 w-20 items-center border border-neutral-500">
                   <Image
-                    source={require("../assets/images/castImage1.png")}
+                    source={
+                      // require("../assets/images/castImage1.png")
+                      {
+                        uri:
+                          image185(person?.profile_path) || fallbackCastImage,
+                      }
+                    }
                     className="rounded-2xl h-24 w-20"
                   />
                 </View>
                 <Text className="text-white text-xs mt-1 ml-1">
-                  {personName.length > 10
-                    ? personName.slice(0, 10) + "..."
-                    : personName}
+                  {person?.original_name > 10
+                    ? person?.original_name.slice(0, 10) + "..."
+                    : person?.original_name}
                 </Text>
                 <Text className="text-neutral-400 text-xs mt-1 ml-1">
-                  {characterName.length > 10
-                    ? characterName.slice(0, 10) + "..."
-                    : characterName}
+                  {person?.character > 10
+                    ? person?.character.slice(0, 10) + "..."
+                    : person?.character}
                 </Text>
               </TouchableOpacity>
             );

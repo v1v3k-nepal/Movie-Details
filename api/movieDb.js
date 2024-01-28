@@ -10,18 +10,13 @@ const searchMoviesEndpoint = `${apiBaseUrl}/search/movie`;
 //endpoints with dynamic params
 
 //movie details
-const movieCreditsEndpoint = (id) =>
-  `${apiBaseUrl}/movie/${id}/credits?api_key=${apiKey}`;
-const movieDetailsEndpoint = (id) =>
-  `${apiBaseUrl}/movie/${id}?api_key=${apiKey}`;
-const similarMoviesEndpoint = (id) =>
-  `${apiBaseUrl}/movie/${id}/similar?api_key=${apiKey}`;
+const movieCreditsEndpoint = (id) => `${apiBaseUrl}/movie/${id}/credits`;
+const movieDetailsEndpoint = (id) => `${apiBaseUrl}/movie/${id}`;
+const relatedMoviesEndpoint = (id) => `${apiBaseUrl}/movie/${id}/similar`;
 
 //cast
-const castDetailsEndpoint = (id) =>
-  `${apiBaseUrl}/person/${id}?api_key=${apiKey}`;
-const castMoviesEndpoint = (id) =>
-  `${apiBaseUrl}/person/${id}/movie_credits?api_key=${apiKey}`;
+const castDetailsEndpoint = (id) => `${apiBaseUrl}/person/${id}`;
+const castMoviesEndpoint = (id) => `${apiBaseUrl}/person/${id}/movie_credits`;
 
 // functions to get images of different widths, so that to improve the loading times)
 export const image500 = (posterPath) =>
@@ -56,6 +51,8 @@ const apiCall = async (endPoint, params) => {
   }
 };
 
+//for home screen
+
 export const fetchTrendingMovies = () => {
   return apiCall(trendingMoviesEndpoint);
 };
@@ -66,4 +63,18 @@ export const fetchUpcomingMovies = () => {
 
 export const fetchTopRatedMovies = () => {
   return apiCall(topRatedMoviesEndpoint);
+};
+
+//for movie screen
+
+export const fetchMovieDetails = (id) => {
+  return apiCall(movieDetailsEndpoint(id));
+};
+
+export const fetchMovieCredits = (id) => {
+  return apiCall(movieCreditsEndpoint(id));
+};
+
+export const fetchRelatedMovies = (id) => {
+  return apiCall(relatedMoviesEndpoint(id));
 };
