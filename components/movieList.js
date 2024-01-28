@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -10,11 +10,15 @@ import {
 } from "react-native";
 import { styles } from "../theme";
 import { useNavigation } from "@react-navigation/native";
+import { Loading } from "./loading";
+import * as Progress from "react-native-progress";
+import { theme } from "../theme";
 
 export const MovieList = ({ title, data, hideSeeAll }) => {
   const navigation = useNavigation();
   const { height, width } = Dimensions.get("window");
   const movieName = "Ant Man the Spider Universe Home Coming";
+  const [loading, setLoading] = useState(true);
   return (
     <View className="mb-8 space-y-4">
       <View className="mx-4 flex-row justify-between items-center">

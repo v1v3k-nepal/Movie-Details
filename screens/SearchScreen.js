@@ -12,12 +12,14 @@ import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { XMarkIcon } from "react-native-heroicons/solid";
 import { useNavigation } from "@react-navigation/core";
+import { Loading } from "../components/loading";
 
 export const SearchScreen = () => {
   const navigation = useNavigation();
   const [searchResults, setSearchResults] = useState([
     1, 2, 3, 4, 5, 6, 7, 8, 8,
   ]);
+  const [loading, setLoading] = useState(false);
   //   const searchResults = [];
   const { height, width } = Dimensions.get("window");
   const movieName =
@@ -37,7 +39,9 @@ export const SearchScreen = () => {
           <XMarkIcon size={20} color="white" />
         </TouchableOpacity>
       </View>
-      {searchResults.length > 0 ? (
+      {loading ? (
+        <Loading />
+      ) : searchResults.length > 0 ? (
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingHorizontal: 15 }}
