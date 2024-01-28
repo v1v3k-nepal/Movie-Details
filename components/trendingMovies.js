@@ -8,6 +8,7 @@ import {
   Image,
 } from "react-native";
 import Carousel from "react-native-snap-carousel";
+import { fallbackMoviePoster, image500 } from "../api/movieDb";
 
 export const TrendingMovies = ({ data }) => {
   const { height, width } = Dimensions.get("window");
@@ -41,7 +42,10 @@ export const MovieCard = ({ data, handleClick }) => {
     <View>
       <TouchableWithoutFeedback onPress={() => handleClick(data)}>
         <Image
-          source={require("../assets/images/moviePoster2.png")}
+          source={
+            // require("../assets/images/moviePoster2.png")
+            { uri: image500(data?.poster_path) || fallbackMoviePoster }
+          }
           style={{ height: height * 0.4, width: width * 0.6 }}
           className="rounded-3xl"
         />

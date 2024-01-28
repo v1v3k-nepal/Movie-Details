@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Bars3CenterLeftIcon,
   MagnifyingGlassIcon,
@@ -17,14 +17,44 @@ import { TrendingMovies } from "../components/trendingMovies";
 import { MovieList } from "../components/movieList";
 import { useNavigation } from "@react-navigation/core";
 import { Loading } from "../components/loading";
+import {
+  fetchTopRatedMovies,
+  fetchTrendingMovies,
+  fetchUpcomingMovies,
+} from "../api/movieDb";
 const ios = Platform.OS == "ios";
 
 export const HomeScreen = () => {
-  const [trending, setTrending] = useState([1, 2, 3, 4, 5]);
-  const [upcoming, setUpcoming] = useState([1, 2, 3, 4, 5]);
-  const [topRated, setTopRated] = useState([1, 2, 3, 4, 5]);
-  const [loading, setLoading] = useState(false);
+  const [trending, setTrending] = useState([]);
+  const [upcoming, setUpcoming] = useState([]);
+  const [topRated, setTopRated] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
+
+  useEffect(() => {
+    getTrendingMovies();
+    getUpcomingMovies();
+    getTopRatedMovies();
+  }, []);
+
+  const getTrendingMovies = async () => {
+    const data = await fetchTrendingMovies();
+    if (data && data?.results) setTrending(data?.results);
+    console.log(data);
+    setLoading(false);
+  };
+
+  const getUpcomingMovies = async () => {
+    const data = await fetchUpcomingMovies();
+    if (data && data?.results) setUpcoming(data?.results);
+    setLoading(false);
+  };
+
+  const getTopRatedMovies = async () => {
+    const data = await fetchTopRatedMovies();
+    if (data && data?.results) setTopRated(data?.results);
+    setLoading(false);
+  };
   return (
     <View className="flex-1 bg-neutral-800">
       {/* Search Bar and logo section */}

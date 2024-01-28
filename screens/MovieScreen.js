@@ -18,6 +18,7 @@ import { Cast } from "../components/cast";
 import { MovieList } from "../components/movieList";
 import { StatusBar } from "expo-status-bar";
 import { Loading } from "../components/loading";
+import { image500 } from "../api/movieDb";
 
 export const MovieScreen = () => {
   const ios = Platform.OS === "ios";

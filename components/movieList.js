@@ -13,11 +13,12 @@ import { useNavigation } from "@react-navigation/native";
 import { Loading } from "./loading";
 import * as Progress from "react-native-progress";
 import { theme } from "../theme";
+import { fallbackMoviePoster, image500 } from "../api/movieDb";
 
 export const MovieList = ({ title, data, hideSeeAll }) => {
   const navigation = useNavigation();
   const { height, width } = Dimensions.get("window");
-  const movieName = "Ant Man the Spider Universe Home Coming";
+  // const movieName = "Ant Man the Spider Universe Home Coming";
   const [loading, setLoading] = useState(true);
   return (
     <View className="mb-8 space-y-4">
@@ -45,14 +46,17 @@ export const MovieList = ({ title, data, hideSeeAll }) => {
             >
               <View className="space-y-1 flex-column mr-4">
                 <Image
-                  source={require("../assets/images/moviePoster1.png")}
+                  source={
+                    // require("../assets/images/moviePoster1.png")
+                    { uri: image500(item?.poster_path) || fallbackMoviePoster }
+                  }
                   style={{ height: height * 0.22, width: width * 0.33 }}
                   className="rounded-3xl"
                 />
                 <Text className="text-neutral-300 ml-1">
-                  {movieName.length > 14
-                    ? movieName.slice(0, 14) + "..."
-                    : movieName}
+                  {item?.title?.length > 14
+                    ? item?.title?.slice(0, 14) + "..."
+                    : item?.title}
                 </Text>
               </View>
             </TouchableWithoutFeedback>
