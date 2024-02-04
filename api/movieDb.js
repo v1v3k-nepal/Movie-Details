@@ -2,10 +2,10 @@ import axios from "axios";
 import { apiKey, apiReadAccessToken } from "../constants";
 
 const apiBaseUrl = "https://api.themoviedb.org/3";
-const trendingMoviesEndpoint = `${apiBaseUrl}/trending/movie/day?region=IN`;
+const trendingMoviesEndpoint = `${apiBaseUrl}/trending/movie/day`;
 const upcomingMoviesEndpoint = `${apiBaseUrl}/movie/upcoming`;
 const topRatedMoviesEndpoint = `${apiBaseUrl}/movie/top_rated`;
-const searchMoviesEndpoint = `${apiBaseUrl}/search/movie?region=IN`;
+const searchMoviesEndpoint = `${apiBaseUrl}/search/movie`;
 
 //endpoints with dynamic params
 
