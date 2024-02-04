@@ -20,7 +20,7 @@ export const Cast = ({ castData }) => {
                 className="mr-4"
                 onPress={() => navigation.navigate("CastDetails", person)}
               >
-                <View className="overflow-hidden rounded-full h-20 w-20 items-center border border-neutral-500">
+                <View className="overflow-hidden rounded-full h-20 w-20 items-center border border-neutral-500 mr-2">
                   <Image
                     source={
                       // require("../assets/images/castImage1.png")
@@ -33,12 +33,12 @@ export const Cast = ({ castData }) => {
                   />
                 </View>
                 <Text className="text-white text-xs mt-1 ml-1">
-                  {person?.original_name > 10
+                  {person?.original_name?.length > 10
                     ? person?.original_name.slice(0, 10) + "..."
                     : person?.original_name}
                 </Text>
                 <Text className="text-neutral-400 text-xs mt-1 ml-1">
-                  {person?.character > 10
+                  {person?.character?.length > 10
                     ? person?.character.slice(0, 10) + "..."
                     : person?.character}
                 </Text>

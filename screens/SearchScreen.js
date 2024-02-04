@@ -8,26 +8,48 @@ import {
   TouchableWithoutFeedback,
   Dimensions,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { XMarkIcon } from "react-native-heroicons/solid";
 import { useNavigation } from "@react-navigation/core";
 import { Loading } from "../components/loading";
+import { debounce } from "lodash";
+import { fallbackMoviePoster, image500, searchMovies } from "../api/movieDb";
 
 export const SearchScreen = () => {
   const navigation = useNavigation();
-  const [searchResults, setSearchResults] = useState([
-    1, 2, 3, 4, 5, 6, 7, 8, 8,
-  ]);
+  const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
   //   const searchResults = [];
   const { height, width } = Dimensions.get("window");
   const movieName =
     "The Adventures of Buckaroo Banzai Across the 8th Dimension";
+
+  const handleSearch = async (search) => {
+    if (search && search.length > 2) {
+      setLoading(true);
+      const data = await searchMovies({
+        query: search,
+        include_adult: true,
+        language: "en-us",
+        page: "10",
+      });
+      if (data && data?.results) {
+        setLoading(false);
+        setSearchResults(data?.results);
+      }
+    } else {
+      setLoading(false);
+      setSearchResults([]);
+    }
+  };
+
+  const handleTextDebounce = useCallback(debounce(handleSearch, 400), []);
   return (
     <SafeAreaView className="flex-1 bg-neutral-800">
       <View className="flex-row items-center justify-between border-2 border-neutral-500 rounded-full my-3 mx-4 p-1">
         <TextInput
+          onChangeText={handleTextDebounce}
           placeholder="Search Movie"
           placeholderTextColor="lightgray"
           className="text-white text-base tracking-wider w-full pl-6 font-semibold"
@@ -58,14 +80,19 @@ export const SearchScreen = () => {
               >
                 <View className="space-y-2 mb-4">
                   <Image
-                    source={require("../assets/images/moviePoster1.png")}
+                    source={
+                      // require("../assets/images/moviePoster1.png")
+                      {
+                        uri: image500(item?.poster_path) || fallbackMoviePoster,
+                      }
+                    }
                     style={{ height: 0.3 * height, width: 0.44 * width }}
                     className="rounded-3xl"
                   />
                   <Text className="text-neutral-300 ml-1 text-sm">
-                    {movieName.length > 22
-                      ? movieName.slice(0, 22) + "..."
-                      : movieName}
+                    {item?.title?.length > 18
+                      ? item?.title?.slice(0, 18) + "..."
+                      : item?.title}
                   </Text>
                 </View>
               </TouchableWithoutFeedback>

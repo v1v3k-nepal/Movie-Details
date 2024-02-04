@@ -2,10 +2,10 @@ import axios from "axios";
 import { apiKey, apiReadAccessToken } from "../constants";
 
 const apiBaseUrl = "https://api.themoviedb.org/3";
-const trendingMoviesEndpoint = `${apiBaseUrl}/trending/movie/day`;
+const trendingMoviesEndpoint = `${apiBaseUrl}/trending/movie/day?region=IN`;
 const upcomingMoviesEndpoint = `${apiBaseUrl}/movie/upcoming`;
 const topRatedMoviesEndpoint = `${apiBaseUrl}/movie/top_rated`;
-const searchMoviesEndpoint = `${apiBaseUrl}/search/movie`;
+const searchMoviesEndpoint = `${apiBaseUrl}/search/movie?region=IN`;
 
 //endpoints with dynamic params
 
@@ -46,7 +46,7 @@ const apiCall = async (endPoint, params) => {
     const response = await axios.request(options);
     return response?.data;
   } catch (error) {
-    console.log(error.message);
+    console.log("API hit Error: ", error);
     return {};
   }
 };
@@ -77,4 +77,18 @@ export const fetchMovieCredits = (id) => {
 
 export const fetchRelatedMovies = (id) => {
   return apiCall(relatedMoviesEndpoint(id));
+};
+
+//cast details screen
+
+export const fetchCastDetails = (id) => {
+  return apiCall(castDetailsEndpoint(id));
+};
+
+export const fetchCastMovies = (id) => {
+  return apiCall(castMoviesEndpoint(id));
+};
+
+export const searchMovies = (params) => {
+  return apiCall(searchMoviesEndpoint, params);
 };

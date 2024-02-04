@@ -33,7 +33,6 @@ export const MovieScreen = () => {
   const navigation = useNavigation();
   const { params: item } = useRoute();
   const [isFavourite, setIsFavourite] = useState(false);
-  const movieName = "Ant Man the Spider Universe Home Coming";
   const [castData, setCastData] = useState([]);
   const [relatedMovies, setRelatedMovies] = useState([]);
   const [movie, setMovie] = useState({});
@@ -112,7 +111,7 @@ export const MovieScreen = () => {
             <Image
               source={
                 // require("../assets/images/moviePoster2.png")
-                { uri: image500(movie?.poster_path) }
+                { uri: image500(movie?.poster_path) || fallbackMoviePoster }
               }
               style={{ width: width, height: height * 0.75 }}
             />
@@ -157,6 +156,7 @@ export const MovieScreen = () => {
               );
             })}
           </View>
+          <Text>{"hello"}</Text>
           <Text className=" text-neutral-400 mx-4 tracking-wide">
             {movie?.overview}
           </Text>

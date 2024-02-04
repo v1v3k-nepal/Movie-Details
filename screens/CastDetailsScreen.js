@@ -7,23 +7,49 @@ import {
   Image,
   Dimensions,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChevronLeftIcon, HeartIcon } from "react-native-heroicons/solid";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "../theme";
-import { useNavigation } from "@react-navigation/core";
+// import { useNavigation } from "@react-navigation/core";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { MovieList } from "../components/movieList";
 import { Loading } from "../components/loading";
+import {
+  fallbackCastImage,
+  fetchCastDetails,
+  fetchCastMovies,
+  image500,
+} from "../api/movieDb";
 
 export const CastDetailsScreen = () => {
   const ios = Platform.OS == "ios";
   const verticalMargin = ios ? "" : " my-3";
   const [isFavourite, setIsFavourite] = useState(false);
   const navigation = useNavigation();
+  const { params: item } = useRoute();
   const { height, width } = Dimensions.get("window");
-  const { heightSc, widthSc } = Dimensions.get("screen");
-  const [workedMovies, setWorkedMovies] = useState([1, 2, 3, 4, 5, 6, 6, 7]);
-  const [loading, setLoading] = useState(false);
+  const [workedMovies, setWorkedMovies] = useState([]);
+  const [personDetails, setPersonDetails] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  const getCastDetails = async (id) => {
+    const data = await fetchCastDetails(id);
+    data && setPersonDetails(data);
+  };
+
+  const getCastMovies = async (id) => {
+    const data = await fetchCastMovies(id);
+    if (data?.cast) setWorkedMovies(data?.cast);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await Promise.all([getCastDetails(item?.id), getCastMovies(item?.id)]);
+      setLoading(false);
+    };
+    fetchData();
+  }, [item]);
   return (
     <ScrollView
       contentContainerStyle={{ paddingBottom: 20 }}
@@ -64,16 +90,22 @@ export const CastDetailsScreen = () => {
         >
           <View className="overflow-hidden rounded-full items-center h-72 w-72 border-2 border-neutral-500">
             <Image
-              source={require("../assets/images/castImage2.png")}
+              source={
+                // require("../assets/images/castImage2.png")
+                {
+                  uri:
+                    image500(personDetails?.profile_path) || fallbackCastImage,
+                }
+              }
               style={{ height: 0.55 * height, width: width * 0.8 }}
             />
           </View>
           <View className="mt-6">
             <Text className="text-white text-3xl font-bold text-center">
-              Tony Stark
+              {personDetails?.name}
             </Text>
             <Text className="text-neutral-500 text-base text-center">
-              London, United Kingdom
+              {personDetails?.place_of_birth}
             </Text>
           </View>
           {/* Gender, birthday, knownfor, popularity section */}
@@ -81,40 +113,40 @@ export const CastDetailsScreen = () => {
           <View className="flex-row justify-center items-center bg-neutral-700 mt-6 mx-2 px-2 py-4 rounded-full">
             <View className="border-r-2 border-r-neutral-400 px-2 items-center">
               <Text className="text-white font-semibold">Gender</Text>
-              <Text className="text-neutral-300 text-sm">Male</Text>
+              <Text className="text-neutral-300 text-sm">
+                {personDetails?.gender == 1 ? "Female" : "Male"}
+              </Text>
             </View>
             <View className="border-r-2 border-r-neutral-400 px-2 items-center">
               <Text className="text-white font-semibold">Birthday</Text>
-              <Text className="text-neutral-300 text-sm">1964-09-02</Text>
+              <Text className="text-neutral-300 text-sm">
+                {personDetails?.birthday ? personDetails?.birthday : "N/A"}
+              </Text>
             </View>
             <View className="border-r-2 border-r-neutral-400 px-2 items-center">
               <Text className="text-white font-semibold">Known For</Text>
-              <Text className="text-neutral-300 text-sm">Acting</Text>
+              <Text className="text-neutral-300 text-sm">
+                {personDetails?.known_for_department}
+              </Text>
             </View>
             <View className="px-2 items-center">
               <Text className="text-white font-semibold">Popularity</Text>
-              <Text className="text-neutral-300 text-sm">64.23</Text>
+              <Text className="text-neutral-300 text-sm">
+                {personDetails?.popularity.toFixed(2)}%
+              </Text>
             </View>
           </View>
 
           <View className="self-start mx-4 space-y-2 mt-6">
             <Text className="text-white font-bold text-lg">Biography</Text>
             <Text className="text-neutral-400 tracking-wide">
-              Tony Stark, also known as Iron Man, is a fictional character in
-              the Marvel Comics universe. Created by writer and editor Stan Lee,
-              scripter Larry Lieber, and artists Don Heck and Jack Kirby, Tony
-              Stark made his first appearance in "Tales of Suspense" #39 in
-              1963. Name: Anthony Edward Stark Alter Ego: Iron Man Occupation:
-              Inventor, Industrialist, Genius, Philanthropist, Superhero First
-              Appearance: Tales of Suspense #39 (March 1963) Background: Tony
-              Stark is portrayed as a wealthy and brilliant industrialist. He
-              inherited Stark Industries, a multinational industrial company,
-              from his father, Howard Stark. Tony is known for his genius-level
-              intellect and his skills as an inventor and engineer.
+              {personDetails?.biography ? personDetails?.biography : "N/A"}
             </Text>
           </View>
           <View className="mt-6">
-            <MovieList title="Movies" data={workedMovies} />
+            {!loading && workedMovies.length > 0 && (
+              <MovieList title="Movies" data={workedMovies} />
+            )}
           </View>
         </View>
       )}
